@@ -58,7 +58,7 @@ resource "aws_iam_role" "bucket_role" {
         },
         Condition = {
             StringEquals = {
-                "sts:ExternalId" = var.workato_iam_external_id
+                "sts:ExternalId" = "workato_iam_external_id_${var.workato_iam_external_id}"
             }
         }
       },
