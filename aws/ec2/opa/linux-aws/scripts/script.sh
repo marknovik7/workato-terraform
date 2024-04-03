@@ -5,4 +5,3 @@ RELEASE_ARTIFACT_URL=`echo $RELEASE_INFO | grep -Eo '\"artifacts\"\s*:\s*\{(\s*,
 curl -o /tmp/agent.tar.gz $RELEASE_ARTIFACT_URL
 sudo tar xvzf /tmp/agent.tar.gz -C /opt
 rm -rf /tmp/agent.tar.g
-z
