@@ -14,6 +14,7 @@ provider "aws" {
       Due = local.due
       Type = var.type
       Provisioning = "Terraform"
+      Jira = "${terraform.workspace}"
     }    
   }  
   profile = var.aws_profile
