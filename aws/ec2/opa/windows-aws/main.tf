@@ -3,9 +3,9 @@ resource "aws_instance" "opa_instance" {
     ami = var.ami == "NONE"? data.aws_ami.windows-2022.id : var.ami
     instance_type = var.instance_type
     key_name = var.new_cert? aws_key_pair.generated_key[0].key_name : "cs-ops"
-    subnet_id   = var.subnet
+    subnet_id   = element(split(",", var.subnet[var.profile]), length(data.aws_instances.provisioned_instances.ids) % 3)
     associate_public_ip_address = true
-    vpc_security_group_ids = [var.security_group_id]
+    vpc_security_group_ids = data.aws_security_groups.workato_security_group.ids
 
     root_block_device {
       volume_size = var.VOLUME_SIZE
@@ -51,5 +51,12 @@ resource "random_password" "password" {
   length           = 16
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+data "aws_security_groups" "workato_security_group" {
+  filter {
+    name   = "group-name"
+    values = ["Workato Default Security Group"]
+  }
 }
 
