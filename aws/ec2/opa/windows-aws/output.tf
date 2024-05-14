@@ -26,6 +26,3 @@ output "Password" {
      sensitive = true
 }
 
-output "instance_hostname" {
-    value = aws_instance.opa_instance.public_dns
-}
