@@ -23,6 +23,6 @@ variable "workato_iam_external_id" {
 }
 
 variable "aws_profile" {
-    default = "default"
+    default = "aws-self-service"
 }
 
