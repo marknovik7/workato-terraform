@@ -15,3 +15,7 @@ output "pem_file" {
     sensitive = true
 }
 
+output "ami-id" {
+    value = aws_instance.opa_instance.ami
+}
+
