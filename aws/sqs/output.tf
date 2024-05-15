@@ -9,13 +9,13 @@ output "policy_arn" {
 
 output "queues" {
     value = toset([
-        for sqs in module.queue_set : sqs.id
+        for sqs in aws_sqs_queue.sqs : sqs.id
         ])
 
 }
 
 output "dead_letter"{
-    value = aws_sqs_queue.sqs_dlq
+    value = aws_sqs_queue.sqs_dlq.id
 }
 
 

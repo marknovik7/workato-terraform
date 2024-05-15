@@ -9,13 +9,23 @@ resource "aws_sqs_queue" "sqs_dlq" {
     name = "dead-letter"
 }
 
-module queue_set {
-  source = "./modules/queue_set"
+# module queue_set {
+#   source = "./modules/queue_set"
 
-  for_each = toset(split(",", var.sqs_queues_name))
+#   for_each = toset(split(",", var.sqs_queues_name))
   
-  name = each.value
-  dlq_arn = aws_sqs_queue.sqs_dlq.arn
+#   name = each.value
+#   dlq_arn = aws_sqs_queue.sqs_dlq.arn
+
+# }
+
+resource "aws_sqs_queue" "sqs" {
+    count = length(local.sqs_names)
+    name = element(local.sqs_names,count.index )
+    redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.sqs_dlq.arn
+    maxReceiveCount     = 4
+  })
 
 }
 
@@ -23,7 +33,7 @@ resource "time_static" "date" {
 }
 
 resource "aws_iam_policy" "sqs_policy" {
-  name        = "SQS-${local.name}-_policy"
+  name        = "SQS-${local.name}_policy"
   description = "Allow "
 
   policy = jsonencode({
@@ -38,14 +48,14 @@ resource "aws_iam_policy" "sqs_policy" {
                   "sqs:GetQueueAttributes",
                   "sqs:SendMessage"
         ]
-        "Resource": [for sqs in module.queue_set : sqs.arn]
+        "Resource": [for sqs in aws_sqs_queue.sqs : sqs.arn]
       }
     ]
   })
 }
 
 resource "aws_iam_role" "sqs_role" {
-  name = "${local.name}_role"
+  name = "SQS_${local.name}_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

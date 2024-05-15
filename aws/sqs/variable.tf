@@ -6,7 +6,7 @@ variable "owner" {
     default = "CS-OPS"
 }
 
-variable "sqs_queues" {
+variable "sqs_queues_name" {
     description = "Insert the name of the queues separated by ,"
 }
 
