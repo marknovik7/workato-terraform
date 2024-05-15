@@ -12,7 +12,7 @@ resource "aws_sqs_queue" "sqs_dlq" {
 module queue_set {
   source = "./modules/queue_set"
 
-  for_each = toset(split(",", var.sqs_queues))
+  for_each = toset(split(",", var.sqs_queues_name))
   
   name = each.value
   dlq_arn = aws_sqs_queue.sqs_dlq.arn

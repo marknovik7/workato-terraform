@@ -7,7 +7,7 @@ variable "owner" {
 }
 
 variable "sqs_queues" {
-    default="queue1,queue2,queue3,queue4,queue5"
+    description = "Insert the name of the queues separated by ,"
 }
 
 variable "type" {
