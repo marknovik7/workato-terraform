@@ -44,11 +44,19 @@ resource "aws_iam_policy" "sqs_policy" {
         "Action" : [
                   "sqs:ReceiveMessage",
                   "sqs:DeleteMessage",
-                  "sqs:ListQueues",
                   "sqs:GetQueueAttributes",
-                  "sqs:SendMessage"
+                  "sqs:SendMessage",
+                  "sqs:ListQueueTags"
         ]
-        "Resource": [for sqs in aws_sqs_queue.sqs : sqs.arn]
+        "Resource": concat([for sqs in aws_sqs_queue.sqs : sqs.arn],[aws_sqs_queue.sqs_dlq.arn])
+      }, 
+      {
+        "Effect" : "Allow",
+        "Action" : [
+                  "sqs:ListQueues",
+                  "iam:ChangePassword"
+        ]
+        "Resource": "*"
       }
     ]
   })
@@ -84,4 +92,21 @@ resource "aws_iam_role_policy_attachment" "role_sqs_policy_attachment" {
 resource "aws_iam_role_policy_attachment" "cloud_watch_policy" {
   role       = aws_iam_role.sqs_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
+resource "aws_iam_user" "user" {
+  name          = "${terraform.workspace}"
+  path          = "/sqs/"
+  force_destroy = true
+}
+
+resource "aws_iam_user_login_profile" "user" {
+  user    = "${aws_iam_user.user.name}"
+  pgp_key = "keybase:torimpo"
+  password_reset_required = true
+}
+
+resource "aws_iam_user_policy_attachment" "user_policy_attachment" {
+  user       = aws_iam_user.user.name
+  policy_arn = aws_iam_policy.sqs_policy.arn
 }
