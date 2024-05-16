@@ -27,3 +27,8 @@ variable "aws_profile" {
     default = "aws-self-service"
 }
 
+variable "fifo" {
+    type = bool
+    default = false
+}
+

@@ -1,27 +1,13 @@
-# resource "aws_sqs_queue" "sqs" {
-
-#   foreach = toset(split(",", var.sqs_queues))
-
-#   name = each.value
-  
-# }
 resource "aws_sqs_queue" "sqs_dlq" {
-    name = "dead-letter"
+    fifo_queue = var.fifo
+    name = format("dead-letter%s",(var.fifo? ".fifo" : ""))
+
 }
 
-# module queue_set {
-#   source = "./modules/queue_set"
-
-#   for_each = toset(split(",", var.sqs_queues_name))
-  
-#   name = each.value
-#   dlq_arn = aws_sqs_queue.sqs_dlq.arn
-
-# }
-
 resource "aws_sqs_queue" "sqs" {
+    fifo_queue = var.fifo
     count = length(local.sqs_names)
-    name = element(local.sqs_names,count.index )
+    name = format("%s%s",element(local.sqs_names,count.index ),(var.fifo? ".fifo" : ""))
     redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.sqs_dlq.arn
     maxReceiveCount     = 4
@@ -54,7 +40,7 @@ resource "aws_iam_policy" "sqs_policy" {
         "Effect" : "Allow",
         "Action" : [
                   "sqs:ListQueues",
-                  "iam:ChangePassword"
+                  "iam:ChangePassword "
         ]
         "Resource": "*"
       }

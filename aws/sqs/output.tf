@@ -18,6 +18,9 @@ output "dead_letter"{
     value = aws_sqs_queue.sqs_dlq.id
 }
 
+output username {
+    value = aws_iam_user.user.name
+}
 
 output "password" {
   value = "${aws_iam_user_login_profile.user.encrypted_password}"
