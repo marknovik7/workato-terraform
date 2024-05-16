@@ -75,3 +75,20 @@ resource "aws_iam_role_policy_attachment" "cloud_watch_policy" {
   role       = aws_iam_role.bucket_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
+
+resource "aws_iam_user" "user" {
+  name          = "${terraform.workspace}"
+  path          = "/s3/"
+  force_destroy = true
+}
+
+resource "aws_iam_user_login_profile" "user" {
+  user    = "${aws_iam_user.user.name}"
+  pgp_key = "keybase:torimpo"
+  password_reset_required = true
+}
+
+resource "aws_iam_user_policy_attachment" "user_policy_attachment" {
+  user       = aws_iam_user.user.name
+  policy_arn = aws_iam_policy.bucket_policy.arn
+}

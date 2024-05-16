@@ -7,6 +7,7 @@ variable "owner" {
 }
 
 variable "bucket_name" {
+    description = "Name of the Bucket"
 }
 
 variable "type" {
