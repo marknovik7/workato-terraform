@@ -7,7 +7,10 @@ variable "owner" {
 }
 
 variable "sqs_queues_name" {
-    description = "Insert the name of the queues separated by ,"
+    type = list( object({
+        name = string
+        fifo = string
+    }))    
 }
 
 variable "type" {
@@ -27,8 +30,4 @@ variable "aws_profile" {
     default = "aws-self-service"
 }
 
-variable "fifo" {
-    type = bool
-    default = false
-}
 

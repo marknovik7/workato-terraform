@@ -1,15 +1,20 @@
 resource "aws_sqs_queue" "sqs_dlq" {
-    fifo_queue = var.fifo
-    name = format("dead-letter%s",(var.fifo? ".fifo" : ""))
+    name = "dead-letter"
+
+}
+
+resource "aws_sqs_queue" "sqs_dlq_fifo" {
+    name = "dead-letter.fifo"
+    fifo_queue = true
 
 }
 
 resource "aws_sqs_queue" "sqs" {
-    fifo_queue = var.fifo
-    count = length(local.sqs_names)
-    name = format("%s%s",element(local.sqs_names,count.index ),(var.fifo? ".fifo" : ""))
+    fifo_queue = element(var.sqs_queues_name,count.index ).fifo
+    count = length(var.sqs_queues_name)
+    name = format("%s%s",element(var.sqs_queues_name,count.index ).name,(element(var.sqs_queues_name,count.index ).fifo? ".fifo" : ""))
     redrive_policy = jsonencode({
-    deadLetterTargetArn = aws_sqs_queue.sqs_dlq.arn
+    deadLetterTargetArn = element(var.sqs_queues_name,count.index ).fifo? aws_sqs_queue.sqs_dlq_fifo.arn : aws_sqs_queue.sqs_dlq.arn
     maxReceiveCount     = 4
   })
 
