@@ -27,3 +27,7 @@ variable "aws_profile" {
     default = "aws-self-service"
 }
 
+variable "pgp_key" {
+    default = "svc_tfo"
+    description = "pgp key"
+}
