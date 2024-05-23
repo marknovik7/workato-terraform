@@ -40,7 +40,7 @@ resource "aws_iam_policy" "bucket_policy" {
           "arn:aws:s3:::${var.bucket_name}/*",
         ]
       }
-    ]
+   ]
   })
 }
 
@@ -91,4 +91,8 @@ resource "aws_iam_user_login_profile" "user" {
 resource "aws_iam_user_policy_attachment" "user_policy_attachment" {
   user       = aws_iam_user.user.name
   policy_arn = aws_iam_policy.bucket_policy.arn
+}
+
+data "aws_kms_alias" "shared_kms_key" {
+  name = "alias/shared-kms-key"
 }
