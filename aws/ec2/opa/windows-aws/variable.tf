@@ -10,6 +10,10 @@ variable "instance_type" {
     default = "t2.micro"
 }
 
+variable "subnet" {
+    default = ""
+}
+
 variable "owner" {
     default = "CS-OPS"
 }
