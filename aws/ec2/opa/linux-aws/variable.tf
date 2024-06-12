@@ -40,6 +40,9 @@ variable "profile" {
     default = "aws-self-service"
 }
 
+variable "subnet_id" {
+    default = null
+}
 variable "security_group_id" {
     default = "sg-0daaafb9fd50a631b"
 }
