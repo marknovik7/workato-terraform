@@ -21,7 +21,7 @@ output "ami-id" {
     value = aws_instance.opa_instance.ami
 }
 
-output "Password" {
+output "password" {
     value = random_password.password.result
      sensitive = true
 }

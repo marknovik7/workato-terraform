@@ -48,6 +48,10 @@ variable "profile" {
     default = "aws-self-service"
 }
 
+variable "vpc_name" {
+    default = "aws-self-service"
+}
+
 variable "security_group_id" {
     default = "sg-0daaafb9fd50a631b"
 }
