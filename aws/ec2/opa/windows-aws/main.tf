@@ -17,6 +17,7 @@ resource "aws_instance" "opa_instance" {
       <powershell>
           net user ${var.instance_username} '${random_password.password.result}' /add /y
           net localgroup administrators ${var.instance_username} /add
+          wmic useraccount where "NAME=’${var.instance_username}’" set PasswordExpires=FALSE
           winrm quickconfig -q
           winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="300"}'
           winrm set winrm/config '@{MaxTimeoutms="1800000"}'
