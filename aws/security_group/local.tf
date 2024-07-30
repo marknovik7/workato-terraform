@@ -27,7 +27,7 @@ locals {
             "description" = "AU Data Center"
         },
         host7: {
-            "cidr_block" = "34.196.38.33/32",
+            "cidr_block" = "34.226.83.119/32",
             "description" = "AWS VPN Client"
         },                           
         host8: {
