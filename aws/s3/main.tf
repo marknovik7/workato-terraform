@@ -1,5 +1,15 @@
+resource "random_string" "random" {
+  keepers = {
+    bucket_name = var.bucket_name
+  }
+  length  = 5
+  special = false
+  upper = false
+  numeric = false
+}
+
 resource "aws_s3_bucket" "bucket" {
-  bucket = var.bucket_name
+  bucket = "${var.bucket_name}-${random_string.random.result}"
   force_destroy = true
 }
 
