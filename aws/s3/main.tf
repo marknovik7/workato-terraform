@@ -11,6 +11,12 @@ resource "random_string" "random" {
 resource "aws_s3_bucket" "bucket" {
   bucket = "${var.bucket_name}-${random_string.random.result}"
   force_destroy = true
+
+  tags = {
+    Name        = "${var.bucket_name}-${random_string.random.result}"
+    Description = var.description
+    Owner       = var.owner
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "bucket_access" {
@@ -25,7 +31,7 @@ resource "time_static" "date" {
 }
 
 resource "aws_iam_policy" "bucket_policy" {
-  name        = "${var.bucket_name}_policy"
+  name        = "${var.bucket_name}-${random_string.random.result}_policy"
   path        = "/"
   description = "Allow "
 
@@ -46,8 +52,8 @@ resource "aws_iam_policy" "bucket_policy" {
           "s3:*"
         ],
         "Resource" : [
-          "arn:aws:s3:::${var.bucket_name}",
-          "arn:aws:s3:::${var.bucket_name}/*",
+          "arn:aws:s3:::${var.bucket_name}-${random_string.random.result}",
+          "arn:aws:s3:::${var.bucket_name}-${random_string.random.result}/*",
         ]
       }
    ]
@@ -55,7 +61,7 @@ resource "aws_iam_policy" "bucket_policy" {
 }
 
 resource "aws_iam_role" "bucket_role" {
-  name = "${var.bucket_name}_role" //format("%s-%s", var.bucket_name, "role")
+  name = "${var.bucket_name}-${random_string.random.result}_role" //format("%s-%s", var.bucket_name, "role")
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

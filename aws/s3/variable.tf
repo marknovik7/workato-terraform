@@ -19,6 +19,11 @@ variable "aws_account_id" {
     description = "Workato ID"
 }
 
+variable "description" {
+  description = "Description of the S3 bucket"
+  type        = string
+}
+
 variable "workato_iam_external_id" {
     description = "Complete with workato_iam_external_id_<workspace_id>"
 }
@@ -30,4 +35,8 @@ variable "aws_profile" {
 variable "pgp_key" {
     default = "svc_tfo"
     description = "pgp key"
+}
+
+variable "owner" {
+  type = string
 }
