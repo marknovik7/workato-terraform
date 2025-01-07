@@ -17,7 +17,6 @@ provider "aws" {
       Jira = "${terraform.workspace}"
     }    
   }  
-  profile = var.aws_profile
   skip_credentials_validation = true
   skip_requesting_account_id  = true
 }
