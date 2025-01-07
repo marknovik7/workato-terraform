@@ -37,6 +37,3 @@ variable "pgp_key" {
     description = "pgp key"
 }
 
-variable "owner" {
-  type = string
-}
