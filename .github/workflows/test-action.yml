@@ -26,3 +26,6 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world! The new password is whatever!!!
+
+      - name: Generate an error
+        run: exit 1
