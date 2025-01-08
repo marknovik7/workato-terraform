@@ -44,5 +44,5 @@ jobs:
 
     - name: Terraform Output
       run: |
-          output=$(terraform output -no-color -json)
+          output=$(terraform output bucket_domain_name)
           echo $output
