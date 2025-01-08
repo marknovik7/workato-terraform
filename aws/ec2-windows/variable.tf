@@ -44,10 +44,6 @@ variable "new_cert" {
     type = bool
 }
 
-variable "profile" {
-    default = "aws-self-service"
-}
-
 variable "vpc_name" {
     default = ""
 }
