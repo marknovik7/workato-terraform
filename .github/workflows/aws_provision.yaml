@@ -43,6 +43,7 @@ permissions:
 
 jobs:
   provision:
+    name: AWS Provisioning - ${{ github.event.inputs.resource_type }}
     runs-on: ubuntu-latest
 
     steps:
