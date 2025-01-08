@@ -44,6 +44,6 @@ jobs:
 
     - name: Terraform Output
       run: |
-          output=$(terraform output bucket_domain_name)
+          output=$(terraform output)
           echo $output
       working-directory: ./aws/s3
