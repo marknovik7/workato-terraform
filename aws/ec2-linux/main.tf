@@ -1,9 +1,15 @@
-# Main AWS instance resource
+# Fetch details of the subnets to verify their VPC
+data "aws_subnet" "self_service_subnets" {
+  for_each = toset(split(",", local.subnet["aws-self-service"]))
+  id       = each.value
+}
+
+# Ensure the security group is in the same VPC
 resource "aws_instance" "opa_instance" {
     ami                         = var.ami == "NONE" ? data.aws_ami.amazon-linux-2.id : var.ami
     instance_type               = var.instance_type
     key_name                    = var.new_cert ? aws_key_pair.generated_key[0].key_name : "cs-ops"
-    subnet_id                   = try(var.subnet_id, element(split(",", local.subnet["aws-self-service"]), length(data.aws_instances.provisioned_instances.ids) % length(split(",", local.subnet["aws-self-service"]))))
+    subnet_id                   = try(var.subnet_id, element(keys(data.aws_subnet.self_service_subnets), length(data.aws_instances.provisioned_instances.ids) % length(keys(data.aws_subnet.self_service_subnets))))
     associate_public_ip_address = true
     vpc_security_group_ids      = data.aws_security_groups.workato_security_group.ids
 
@@ -13,6 +19,11 @@ resource "aws_instance" "opa_instance" {
     }
 
     user_data = file("scripts/script.sh")
+
+    tags = {
+      Name = local.name
+      Due  = local.due
+    }
 }
 
 # Static time resource for unique naming
