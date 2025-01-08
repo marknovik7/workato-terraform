@@ -7,7 +7,6 @@ terraform {
 }
 
 provider "aws" {
-  profile = var.profile
   default_tags {
     tags = {
       Name = local.name

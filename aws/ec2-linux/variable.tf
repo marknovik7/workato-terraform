@@ -36,10 +36,6 @@ variable "new_cert" {
     type = bool
 }
 
-variable "profile" {
-    default = "aws-self-service"
-}
-
 variable "subnet_id" {
     default = null
 }
