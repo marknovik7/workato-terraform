@@ -1,34 +1,15 @@
-# Fetch details of the security groups by name
-data "aws_security_groups" "workato_security_group" {
-  filter {
-    name   = "group-name"
-    values = ["Workato Default Security Group"]
-  }
-}
-
-# Fetch details of a specific security group to get its VPC ID
-data "aws_security_group" "selected_security_group" {
-  id = data.aws_security_groups.workato_security_group.ids[0]
-}
-
-# Fetch subnets in the same VPC as the security group
-data "aws_subnets" "self_service_subnets" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_security_group.selected_security_group.vpc_id]
-  }
-  filter {
-    name   = "subnet-id"
-    values = split(",", local.subnet["aws-self-service"])
-  }
-}
-
 # Main AWS instance resource
 resource "aws_instance" "opa_instance" {
   ami                         = var.ami == "NONE" ? data.aws_ami.amazon-linux-2.id : var.ami
   instance_type               = var.instance_type
   key_name                    = var.new_cert ? aws_key_pair.generated_key[0].key_name : "cs-ops"
-  subnet_id                   = try(var.subnet_id, element(data.aws_subnets.self_service_subnets.ids, length(data.aws_instances.provisioned_instances.ids) % length(data.aws_subnets.self_service_subnets.ids)))
+
+  # Randomly select a subnet from aws-self-service
+  subnet_id                   = element(
+    split(",", local.subnet["aws-self-service"]),
+    random_integer.self_service_subnet.result % length(split(",", local.subnet["aws-self-service"]))
+  )
+
   associate_public_ip_address = true
   vpc_security_group_ids      = data.aws_security_groups.workato_security_group.ids
 
@@ -70,4 +51,18 @@ data "aws_instances" "provisioned_instances" {
     name   = "tag:Provisioning"
     values = ["Terraform"]
   }
+}
+
+# Fetch details of the security groups by name
+data "aws_security_groups" "workato_security_group" {
+  filter {
+    name   = "group-name"
+    values = ["Workato Default Security Group"]
+  }
+}
+
+# Generate a random integer to help with subnet selection
+resource "random_integer" "self_service_subnet" {
+  min = 0
+  max = length(split(",", local.subnet["aws-self-service"])) - 1
 }
