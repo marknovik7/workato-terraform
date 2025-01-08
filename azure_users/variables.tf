@@ -17,7 +17,7 @@ variable "client_id" {
   sensitive = true
 }
 
-variable "client_secret" {
-  type = string
-  sensitive = true
-}
+# variable "client_secret" {
+#   type = string
+#   sensitive = true
+# }
