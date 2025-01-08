@@ -45,7 +45,7 @@ jobs:
     - name: Terraform Output
       run: |
           output=$(terraform output -json)
-          echo "output=$output" > "$GITHUB_ENV"
+          echo "output='$output'" > "$GITHUB_ENV"
       working-directory: ./aws/s3
 
     - name: Curl call
