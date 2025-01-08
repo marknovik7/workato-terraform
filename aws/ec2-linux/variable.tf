@@ -42,3 +42,13 @@ variable "subnet_id" {
 variable "security_group_id" {
     default = "sg-0daaafb9fd50a631b"
 }
+
+variable "end_date" {
+    type = string
+    default = null
+}
+
+variable "jira_ticket_id" {
+    type = string
+    default = null
+}

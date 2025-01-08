@@ -11,10 +11,10 @@ provider "aws" {
     tags = {
       Name = local.name
       OWNER = var.owner
-      Due = local.due
+      DueDate = var.end_date
       Type = var.type
       Provisioning = "Terraform"
-      Jira = "${terraform.workspace}"
+      JiraTicketID = var.jira_ticket_id
     }    
   }  
   region = var.region
