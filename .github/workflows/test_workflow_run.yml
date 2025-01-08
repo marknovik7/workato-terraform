@@ -44,6 +44,5 @@ jobs:
 
     - name: Terraform Output
       run: |
-          terraform output \
-          -no-color \
-          -json
+          output=$(terraform output -no-color -json)
+          echo $output
