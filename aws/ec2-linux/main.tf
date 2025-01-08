@@ -25,24 +25,24 @@ data "aws_subnets" "self_service_subnets" {
 
 # Main AWS instance resource
 resource "aws_instance" "opa_instance" {
-    ami                         = var.ami == "NONE" ? data.aws_ami.amazon-linux-2.id : var.ami
-    instance_type               = var.instance_type
-    key_name                    = var.new_cert ? aws_key_pair.generated_key[0].key_name : "cs-ops"
-    subnet_id                   = try(var.subnet_id, element(data.aws_subnets.self_service_subnets.ids, length(data.aws_instances.provisioned_instances.ids) % length(data.aws_subnets.self_service_subnets.ids)))
-    associate_public_ip_address = true
-    vpc_security_group_ids      = data.aws_security_groups.workato_security_group.ids
+  ami                         = var.ami == "NONE" ? data.aws_ami.amazon-linux-2.id : var.ami
+  instance_type               = var.instance_type
+  key_name                    = var.new_cert ? aws_key_pair.generated_key[0].key_name : "cs-ops"
+  subnet_id                   = try(var.subnet_id, element(data.aws_subnets.self_service_subnets.ids, length(data.aws_instances.provisioned_instances.ids) % length(data.aws_subnets.self_service_subnets.ids)))
+  associate_public_ip_address = true
+  vpc_security_group_ids      = data.aws_security_groups.workato_security_group.ids
 
-    root_block_device {
-      volume_size = var.VOLUME_SIZE
-      tags        = data.aws_default_tags.opa_default_tags.tags 
-    }
+  root_block_device {
+    volume_size = var.VOLUME_SIZE
+    tags        = data.aws_default_tags.opa_default_tags.tags
+  }
 
-    user_data = file("scripts/script.sh")
+  user_data = file("scripts/script.sh")
 
-    tags = {
-      Name = local.name
-      Due  = local.due
-    }
+  tags = {
+    Name = local.name
+    Due  = local.due
+  }
 }
 
 # Static time resource for unique naming
@@ -69,13 +69,5 @@ data "aws_instances" "provisioned_instances" {
   filter {
     name   = "tag:Provisioning"
     values = ["Terraform"]
-  }
-}
-
-# Fetch security groups by name
-data "aws_security_groups" "workato_security_group" {
-  filter {
-    name   = "group-name"
-    values = ["Workato Default Security Group"]
   }
 }
