@@ -44,6 +44,6 @@ jobs:
 
     - name: Terraform Output
       run: |
-          output=$(terraform output -json)
+          output=$(terraform output -raw)
           echo $output
       working-directory: ./aws/s3
