@@ -9,7 +9,8 @@ on:
         type: choice
         options:
           - s3
-          - ec2
+          - ec2-linux
+          - ec2-windows
           - kms
           - rds
           - sqs
