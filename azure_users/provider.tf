@@ -15,8 +15,6 @@ provider "azurerm" {
     use_oidc = true
 }
 
-# provider "random" {}
-
 provider "azuread" {
   tenant_id = var.tenant_id
 }
