@@ -1,31 +1,49 @@
-# This is a basic workflow to help you get started with Actions
+name: Test Action Test
 
-name: Test Action
-
-# Controls when the workflow will run
 on:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+      
+env:
+  TF_BACKEND_BUCKET: "terraform-state-strore"
+  TF_BACKEND_REGION: "us-east-1"      
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+  security-events: write         
+
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  state: 
+    name: Terraform State Output
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Add mask
-        run: |
-          echo "::add-mask::password" 
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world! The new password is whatever!!!
+    - name: Configure AWS credentials Role
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_GITHUB_ACTION_ROLE }}
+        aws-region: ${{ env.TF_BACKEND_REGION }}
+        
+    
+    - name: Initialize Terraform
+      run: |
+          terraform init \
+          -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
+          -backend-config="region=${{ env.TF_BACKEND_REGION }}" \
+          -backend-config="key=s3/FEDE-001/tf-state"
+      working-directory: ./aws/s3
 
-      # - name: Generate an error
-      #   run: exit 1
+    - name: Terraform Output
+      run: |
+          output=$(terraform output -json)
+          echo $output > "$GITHUB_OUTPUT"
+      working-directory: ./aws/s3
