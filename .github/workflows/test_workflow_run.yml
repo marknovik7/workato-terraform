@@ -45,6 +45,5 @@ jobs:
     - name: Terraform Output
       run: |
           terraform output \
-          -backend-config="key=s3/FEDE-001/tf-state"
           -no-color \
           -json
