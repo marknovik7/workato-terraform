@@ -12,7 +12,7 @@ permissions:
   contents: read
   actions: read
   security-events: write         
-  
+
 jobs:
   state: 
     name: Workrun ended
@@ -37,11 +37,12 @@ jobs:
           terraform init \
           -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
           -backend-config="region=${{ env.TF_BACKEND_REGION }}" \
-           -backend-config="key=s3/FEDE-001/tf-state"
+          -backend-config="key=s3/FEDE-001/tf-state"
       working-directory: ./aws/s3
 
-    - name: Change Directory
+    - name: Terraform Output
       run: |
           terraform output \
+          -backend-config="key=s3/FEDE-001/tf-state"
           -no-color \
           -json
