@@ -89,7 +89,6 @@ jobs:
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
 
     - name: Save Terraform Output Params
-      if: ${{ github.event.inputs.terraform_action == 'apply' }}
       run: | 
         echo "$(terraform output -json)" | jq '{"jira_key":${{ github.event.inputs.request_id }}, "terraform_action", ${{ github.event.inputs.terraform_action }}, "output": map_values(.value)}'> terraform_output.json
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
