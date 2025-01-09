@@ -1,4 +1,3 @@
-```markdown
 # Terraform Scripts for AWS Resources
 
 This repository contains Terraform scripts to provision various AWS resources like S3 buckets, EC2 Linux instances, and EC2 Windows instances. Below are the required inputs that users need to pass from the workflow for each resource type.
