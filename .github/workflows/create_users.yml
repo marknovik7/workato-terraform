@@ -58,7 +58,7 @@ jobs:
     - name: Remove state file from Azure Backend (Only on Destroy)
       if: ${{ github.event.client_payload.action }} == "destroy" 
       run: |
-        az storage blob delete -c ${{ secrets.CONTAINER_NAME }} -n terraform.tfstate
+        az storage blob delete -c ${{ secrets.CONTAINER_NAME }} -n terraform.tfstate --account-name marktfstate
 
     # - name: Send output to webhook
     #   if: always()
