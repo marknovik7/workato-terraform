@@ -90,7 +90,7 @@ jobs:
 
     - name: Save Terraform Output Params
       run: | 
-        echo "$(terraform output -json)" | jq '{"jira_key":${{ github.event.inputs.request_id }}, "terraform_action", ${{ github.event.inputs.terraform_action }}, "output": map_values(.value)}'> terraform_output.json
+        echo "$(terraform output -json)" | jq '{"jira_key":"${{ github.event.inputs.request_id }}", "terraform_action", "${{ github.event.inputs.terraform_action }}", "output": map_values(.value)}'> terraform_output.json
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
 
     - name: Curl call
