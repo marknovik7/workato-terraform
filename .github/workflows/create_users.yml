@@ -55,13 +55,10 @@ jobs:
         TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
         TF_VAR_new_user: ${{ github.event.client_payload.username }}
 
-    - name: Remote state file from Azure Backend (Only on Destroy)
-      if: ${{ github.event.client_payload == 'destroy' }}
+    - name: Remove state file from Azure Backend (Only on Destroy)
+      if: ${{ github.event.client_payload == "destroy" }}
       run: |
-        az storage blob delete \
-          --account-name ${{ secrets.STORAGE_ACCOUNT }} \
-          --container-name ${{ secrets.CONTAINER_NAME }} \
-          --name terraform.tfstate
+        az storage blob delete -c ${{ secrets.CONTAINER_NAME }} -n terraform.tfstate
 
     # - name: Send output to webhook
     #   if: always()
