@@ -86,7 +86,7 @@ resource "aws_iam_role_policy_attachment" "cloud_watch_policy" {
 }
 
 resource "aws_iam_user" "user" {
-  name          = "${terraform.workspace}"
+  name          = var.jira_ticket_id
   path          = "/sqs/"
   force_destroy = true
 }
