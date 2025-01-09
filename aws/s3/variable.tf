@@ -34,3 +34,6 @@ variable "pgp_key" {
     description = "pgp key"
 }
 
+variable "jira_ticket_id" {
+    type = string
+}
