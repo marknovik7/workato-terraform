@@ -70,13 +70,6 @@ jobs:
     - name: Show contents of variables file
       run: cat ./aws/${{ github.event.inputs.resource_type }}/variables.tfvars.json
 
-    # Switch to Backend Role for Terraform State
-    - name: Configure AWS credentials - Backend Role
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ secrets.STATE_BACKEND_AWS_ROLE }}
-        aws-region: ${{ env.TF_BACKEND_REGION }}
-
     - name: Initialize Terraform
       run: |
         terraform init \
@@ -84,13 +77,6 @@ jobs:
         -backend-config="region=${{ env.TF_BACKEND_REGION }}" \
         -backend-config="key=${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/tf-state"
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
-
-    # Switch Back to General Role for Resource Creation
-    - name: Configure AWS credentials - General Role (Switch Back)
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ secrets.AWS_GITHUB_ACTION_ROLE }}
-        aws-region: ${{ env.TF_BACKEND_REGION }}
 
     - name: Apply Terraform
       if: ${{ github.event.inputs.terraform_action == 'apply' }}
