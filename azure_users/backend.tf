@@ -6,7 +6,5 @@ terraform {
     key = "terraform.tfstate"
     use_azuread_auth = true
     use_oidc = true
-    tenant_id = var.tenant_id
-    client_id = var.client_id
   }
 }
