@@ -45,7 +45,7 @@ jobs:
     - name: Terraform Output
       id: terraform_output
       run: |
-          echo "$(terraform output -json)" > terraform_output.json
+          echo "$(terraform output -json)" | jq '{"jira_key":"FEDE-001", "output": map_values(.value)}'> terraform_output.json
           cat terraform_output.json
       working-directory: ./aws/s3
 
