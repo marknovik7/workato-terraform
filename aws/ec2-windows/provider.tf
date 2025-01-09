@@ -14,7 +14,7 @@ provider "aws" {
       Due = local.due
       Type = var.type
       Provisioning = "Terraform"
-      Jira = "${terraform.workspace}"
+      JiraTicketID = var.jira_ticket_id
     }    
   }  
   region = var.region

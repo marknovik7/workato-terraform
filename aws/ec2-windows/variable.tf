@@ -51,3 +51,8 @@ variable "vpc_name" {
 variable "security_group_id" {
     default = "sg-0daaafb9fd50a631b"
 }
+
+variable "jira_ticket_id" {
+    type = string
+    default = null
+}

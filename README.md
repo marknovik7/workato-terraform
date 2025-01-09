@@ -72,7 +72,8 @@ Example:
   "VOLUME_SIZE": 80,
   "VOLUME_TYPE": "gp3",
   "instance_name": "yash-linux-opa-test",
-  "type": "PoC"
+  "type": "PoC",
+  "jira_ticket_id": "JIRAID123"
 }
 ```
 
@@ -91,6 +92,7 @@ Example:
 | `subnet`         | Subnet ID                                | string  | ""                      | Default Value Provided                   |
 | `vpc_name`       | VPC Name                                 | string  | ""                      | Default Value Provided                   |
 | `security_group_id` | Security Group ID                     | string  | `sg-0daaafb9fd50a631b`  | Default Value Provided                   |
+| `jira_ticket_id` | Jira Ticket ID                           | string  | null                    | User Input Field                         |
 
 ## Usage
 

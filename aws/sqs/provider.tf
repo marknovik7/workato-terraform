@@ -14,10 +14,9 @@ provider "aws" {
       Due = local.due
       Type = var.type
       Provisioning = "Terraform"
-      Jira = "${terraform.workspace}"
+      JiraTicketID = var.jira_ticket_id
     }    
   }  
-  profile = var.aws_profile
   skip_credentials_validation = true
   skip_requesting_account_id  = true
 }
