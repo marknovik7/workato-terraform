@@ -1,0 +1,31 @@
+name: Webhook Test
+
+on:
+  workflow_run:
+    workflows:
+        - Test Action Test
+    types:
+        - completed
+      
+env:
+  TF_BACKEND_BUCKET: "terraform-state-strore"
+  TF_BACKEND_REGION: "us-east-1"      
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+  security-events: write         
+
+jobs:
+  on-success: 
+    needs: state
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+         - run: echo 'The triggering workflow passed'
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed'
