@@ -45,11 +45,10 @@ jobs:
     - name: Terraform Output
       id: terraform_output
       run: |
-          echo "output=$(terraform output -json)" >> $GITHUB_OUTPUT
-          echo $output 
+          echo "output=$(terraform output -json)" > terraform_output.json
       working-directory: ./aws/s3
 
     - name: Curl call
       run: |
-        curl -X POST -H 'Content-Type: application/json' -d '${{ steps.terraform_output.outputs}}' "https://webhooks.workato.com/webhooks/rest/855bb7a0-ec04-4752-8022-044be408d270/get-callback"
+        curl -X POST -H 'Content-Type: application/json' -d @terraform_output.json "https://webhooks.workato.com/webhooks/rest/855bb7a0-ec04-4752-8022-044be408d270/get-callback"
         
