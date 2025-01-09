@@ -42,21 +42,14 @@ jobs:
         TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
         TF_VAR_new_user: ${{ github.event.client_payload.username }}
 
-    - name: Capture Terraform output
-      id: terraform_output
-      run: |
-        terraform output -json > tf_output.json
-        output=$(jq -c . tf_output.json)
-        echo "output=$output" >> $GITHUB_ENV
-
-    - name: Send output to webhook
-      if: always()
-      run: |
-        if [ -z "${{ env.output }}" ]; then
-          output="Terraform output not available"
-        else
-          output="${{ env.output }}"
-        fi
-        curl -X POST -H "Content-Type: application/json" \
-        -d "{\"output\": ${output}, \"status\": \"${{ job.status }}\"}" \
-        https://webhooks.workato.com/webhooks/rest/855bb7a0-ec04-4752-8022-044be408d270/github-action-output
+    # - name: Send output to webhook
+    #   if: always()
+    #   run: |
+    #     if [ -z "${{ env.output }}" ]; then
+    #       output="Terraform output not available"
+    #     else
+    #       output="${{ env.output }}"
+    #     fi
+    #     curl -X POST -H "Content-Type: application/json" \
+    #     -d "{\"output\": ${output}, \"status\": \"${{ job.status }}\"}" \
+    #     https://webhooks.workato.com/webhooks/rest/855bb7a0-ec04-4752-8022-044be408d270/github-action-output
