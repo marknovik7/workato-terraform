@@ -95,4 +95,4 @@ Example:
 
 ## Usage
 
-To use these Terraform scripts, ensure you provide the required inputs as specified in the schema above. Below is an example workflow dispatch configuration for provisioning an S3 bucket.
+To use these Terraform scripts, ensure you provide the required inputs as specified in the schema above.
