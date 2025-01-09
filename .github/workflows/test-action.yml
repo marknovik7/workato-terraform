@@ -43,13 +43,13 @@ jobs:
           terraform init \
           -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
           -backend-config="region=${{ env.TF_BACKEND_REGION }}" \
-          -backend-config="key=s3/FEDE-001/tf-state"
+          -backend-config="key=s3/${{ githbu.event.inputs.request_id }}/tf-state"
       working-directory: ./aws/s3
 
     - name: Terraform Output
       id: terraform_output
       run: |
-          echo "$(terraform output -json)" | jq '{"jira_key":"{{ github.event.inputs.request_id }}", "output": map_values(.value)}'> terraform_output.json
+          echo "$(terraform output -json)" | jq '{"jira_key":"${{ github.event.inputs.request_id }}", "output": map_values(.value)}'> terraform_output.json
           cat terraform_output.json
       working-directory: ./aws/s3
 
