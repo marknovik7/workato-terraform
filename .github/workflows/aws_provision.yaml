@@ -88,6 +88,13 @@ jobs:
       run: terraform destroy -auto-approve -var-file=variables.tfvars.json
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
 
-    - name: Output Results
-      run: terraform output
+    - name: Save Terraform Output Params
+      if: ${{ github.event.inputs.terraform_action == 'apply' }}
+      run: | 
+        echo "$(terraform output -json)" | jq '{"jira_key":${{ github.event.inputs.request_id }}, "terraform_action", ${{ github.event.inputs.terraform_action }}, "output": map_values(.value)}'> terraform_output.json
+      working-directory: ./aws/${{ github.event.inputs.resource_type }}
+
+    - name: Curl call
+      run: |
+        curl -X POST -H 'Content-Type: application/json' -d @terraform_output.json "https://webhooks.workato.com/webhooks/rest/855bb7a0-ec04-4752-8022-044be408d270/get-callback"
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
