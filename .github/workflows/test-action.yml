@@ -43,7 +43,7 @@ jobs:
           terraform init \
           -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
           -backend-config="region=${{ env.TF_BACKEND_REGION }}" \
-          -backend-config="key=s3/${{ githbu.event.inputs.request_id }}/tf-state"
+          -backend-config="key=s3/${{ github.event.inputs.request_id }}/tf-state"
       working-directory: ./aws/s3
 
     - name: Terraform Output
