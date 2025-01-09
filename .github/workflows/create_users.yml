@@ -37,16 +37,18 @@ jobs:
         echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
 
     - name: Initialize Terraform
-      env:
-        ARM_CLIENT_ID: ${{secrets.ARM_CLIENT_ID}}
-        ARM_SUBSCRIPTION_ID: ${{secrets.ARM_SUBSCRIPTION_ID}}
-        ARM_TENANT_ID: ${{secrets.ARM_TENANT_ID}}
+      # env:
+      #   ARM_CLIENT_ID: ${{secrets.ARM_CLIENT_ID}}
+      #   ARM_SUBSCRIPTION_ID: ${{secrets.ARM_SUBSCRIPTION_ID}}
+      #   ARM_TENANT_ID: ${{secrets.ARM_TENANT_ID}}
       run: |
         terraform init \
           -backend-config="storage_account_name=${{ secrets.STORAGE_ACCOUNT }}" \
           -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
           -backend-config="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" \
-          -backend-config="key=terraform.tfstate"
+          -backend-config="key=terraform.tfstate" \
+          -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+          -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
   
     - name: Apply Terraform
       run: terraform apply -auto-approve
