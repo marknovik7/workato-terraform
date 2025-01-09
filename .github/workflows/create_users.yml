@@ -46,7 +46,8 @@ jobs:
       id: terraform_output
       run: |
         terraform output -json > tf_output.json
-        echo "output=$(cat tf_output.json)" >> $GITHUB_ENV
+        output=$(jq -c . tf_output.json)
+        echo "output=$output" >> $GITHUB_ENV
 
     - name: Send output to webhook
       if: always()
