@@ -46,6 +46,7 @@ jobs:
       id: terraform_output
       run: |
           echo "$(terraform output -json)" > terraform_output.json
+          cat terraform_output.json
       working-directory: ./aws/s3
 
     - name: Curl call
