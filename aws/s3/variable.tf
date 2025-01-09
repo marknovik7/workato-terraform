@@ -19,10 +19,6 @@ variable "aws_account_id" {
     description = "Workato ID"
 }
 
-variable "description" {
-  description = "Description of the S3 bucket"
-  type        = string
-}
 
 variable "workato_iam_external_id" {
     description = "Complete with workato_iam_external_id_<workspace_id>"
@@ -36,4 +32,10 @@ variable "pgp_key" {
 
 variable "jira_ticket_id" {
     type = string
+    default = null
+}
+
+variable "end_date" {
+    type = string
+    default = null
 }
