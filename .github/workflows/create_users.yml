@@ -41,8 +41,13 @@ jobs:
         ARM_CLIENT_ID: ${{secrets.ARM_CLIENT_ID}}
         ARM_SUBSCRIPTION_ID: ${{secrets.ARM_SUBSCRIPTION_ID}}
         ARM_TENANT_ID: ${{secrets.ARM_TENANT_ID}}
-      run: terraform init -backend-config="storage_account_name=${{ secrets.STORAGE_ACCOUNT }}" -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" -backend-config="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" -backend-config="key=terraform.tfstate"
-
+      run: |
+        terraform init \
+          -backend-config="storage_account_name=${{ secrets.STORAGE_ACCOUNT }}" \
+          -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
+          -backend-config="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" \
+          -backend-config="key=terraform.tfstate"
+  
     - name: Apply Terraform
       run: terraform apply -auto-approve
       env:
