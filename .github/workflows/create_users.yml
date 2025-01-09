@@ -31,16 +31,12 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Set environment variables for Terraform backend
-      run: |
-        echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
-        echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+    # - name: Set environment variables for Terraform backend
+    #   run: |
+    #     echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+    #     echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
 
     - name: Initialize Terraform
-      # env:
-      #   ARM_CLIENT_ID: ${{secrets.ARM_CLIENT_ID}}
-      #   ARM_SUBSCRIPTION_ID: ${{secrets.ARM_SUBSCRIPTION_ID}}
-      #   ARM_TENANT_ID: ${{secrets.ARM_TENANT_ID}}
       run: |
         terraform init \
           -backend-config="storage_account_name=${{ secrets.STORAGE_ACCOUNT }}" \
@@ -50,8 +46,13 @@ jobs:
           -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
           -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}"
   
-    - name: Apply Terraform
-      run: terraform apply -auto-approve
+    - name: Apply or Destroy Terraform
+      run: |
+        if [ "${{ github.event.client_payload.action }}" == "destroy" ]; then
+          terraform destroy -auto-approve
+        else
+          terraform apply -auto-approve
+        fi
       env:
         TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
