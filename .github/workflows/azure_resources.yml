@@ -77,7 +77,7 @@ jobs:
         if [ "${{ github.event.inputs.action }}" == "destroy" ]; then
           terraform destroy -auto-approve
         else
-          terraform apply -auto-approve -var-file=variables.tfvars.json
+          terraform apply -auto-approve -var-file=./${{ github.event.inputs.resource_type }}/variables.tfvars.json
         fi
       env:
         TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
