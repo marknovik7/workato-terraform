@@ -34,7 +34,7 @@ jobs:
 
     - name: Create variables file
       id: variables-create
-      run: echo '${{ github.event.client_payload.variables }}' > ./${{ github.event.client_payload.working_directory }}/variables.tfvars.json
+      run: echo '${{ toJson(github.event.client_payload.variables) }}' > ./${{ github.event.client_payload.working_directory }}/variables.tfvars.json
 
     - name: Initialize Terraform
       run: |
