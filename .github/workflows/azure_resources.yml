@@ -82,7 +82,7 @@ jobs:
         TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
 
     - name: Remove state file from Azure Backend (Only on Destroy)
-      if: github.event.inputs.action == "destroy"
+      if: github.event.inputs.action == 'destroy'
       run: |
         az storage blob delete -c ${{ secrets.CONTAINER_NAME }} -n terraform.tfstate --account-name marktfstate --auth-mode login
 
