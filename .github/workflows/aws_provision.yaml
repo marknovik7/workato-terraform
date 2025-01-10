@@ -92,10 +92,17 @@ jobs:
 
     - name: Save Terraform Output Params
       run: | 
-        echo "$(terraform output -json)" | jq '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "${{ github.event.inputs.terraform_action }}", "output": map_values(.value)}'> terraform_output.json
+        echo "$(terraform output -json)" | jq '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "${{ github.event.inputs.terraform_action }}", "status": "success", "output": map_values(.value)}'> terraform_output.json
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
 
+    - name: Build Error Message
+      if: ${{ failure() || cancelled() }}
+      run: |
+        jq -cn '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "testing", "status": "failed", "output": {"message": "Process Failed or Cancelled. Please check process ${{ github.run_id }}"}}'> terraform_output.json
+        echo $(cat terraform_output.json)
+      working-directory: ./aws/s3
     - name: Curl call
+      if: always()
       run: |
         curl -X POST -H 'Content-Type: application/json' -d @terraform_output.json "https://webhooks.workato.com/webhooks/rest/855bb7a0-ec04-4752-8022-044be408d270/get-callback"
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
