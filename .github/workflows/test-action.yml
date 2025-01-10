@@ -48,7 +48,7 @@ jobs:
 
     - name: Force Error
       run: exit 1
-      
+
     - name: Terraform Output
       id: terraform_output
       run: |
@@ -57,7 +57,7 @@ jobs:
       working-directory: ./aws/s3
 
     - name: Build Error Message
-      if: ${{ always() && (contains(needs.*.result, 'failure') || cancelled() )}}
+      if: ${{ failure() || cancelled() }}
       run: |
         jq -cn '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "testing", "output": {"message": "Process Failed or Cancelled. Please check process ${{ github.event.id }}"}}'> terraform_output.json
         echo $(cat terraform_output.json)
