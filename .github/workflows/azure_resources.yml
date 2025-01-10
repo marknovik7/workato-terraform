@@ -32,6 +32,9 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+    - name: Display variables
+      run: echo '${{ github.event.client_payload.variables }}'
+
     - name: Create variables file
       id: variables-create
       run: echo '${{ toJson(github.event.client_payload.variables) }}' > ./${{ github.event.client_payload.working_directory }}/variables.tfvars.json
