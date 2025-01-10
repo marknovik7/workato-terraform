@@ -10,7 +10,7 @@ resource "aws_sqs_queue" "sqs_dlq" {
 }
 
 resource "aws_sqs_queue" "sqs_dlq_fifo" {
-  name       = "dead-letter.fifo-${random_string.suffix.result}"
+  name       = "dead-letter-${random_string.suffix.result}.fifo"
   fifo_queue = true
 }
 
