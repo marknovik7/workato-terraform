@@ -99,12 +99,9 @@ Example:
 Example:
 ```json
 {
-    "region": "us-east-1",
     "owner": "dixiy",
-    "type": "testing",
     "aws_account_id": "353360065216",
     "workato_iam_external_id": "1321312",
-    "pgp_key": "svc_tfo",
     "sqs_queues_name": [
         {
             "name": "standard-queue",
@@ -126,8 +123,8 @@ Example:
 | `region`             | AWS region                                | string  | `us-east-1`        | Default Value Provided                   |
 | `owner`              | Owner of the resource                     | string  | `CS-OPS`           | User Input Field                         |
 | `type`               | Type of the resource                      | string  | `PoC`              | Default Value Provided                   |
-| `aws_account_id`     | Workato ID                                | string  | `353360065216`     | Default Value Provided                   |
-| `workato_iam_external_id` | Workato IAM External ID             | string  | `<External-ID>`    | User Input Field                         |
+| `aws_account_id`     | Workato ID                                | string  | `353360065216`     | User Input Field                         |
+| `workato_iam_external_id` | Workato IAM External ID              | string  | `<External-ID>`    | User Input Field                         |
 | `pgp_key`            | PGP key                                   | string  | `svc_tfo`          | Default Value Provided                   |
 | `sqs_queues_name`    | List of SQS queues with name and type     | list    | []                 | User Input Field                         |
 | `jira_ticket_id`     | Jira Ticket ID                            | string  | null               | User Input Field                         |

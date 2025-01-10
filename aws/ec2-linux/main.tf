@@ -19,11 +19,6 @@ resource "aws_instance" "opa_instance" {
   }
 
   user_data = file("scripts/script.sh")
-
-  tags = {
-    Name = local.name
-    Due  = local.due
-  }
 }
 
 # Static time resource for unique naming
