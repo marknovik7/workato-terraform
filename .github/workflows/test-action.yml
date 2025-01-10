@@ -49,7 +49,7 @@ jobs:
     - name: Terraform Output
       id: terraform_output
       run: |
-          echo "$(terraform output -json)" | jq '{"jira_key":"${{ github.event.inputs.request_id }}", "output": map_values(.value)}'> terraform_output.json
+          echo "$(terraform output -json)" | jq '{"jira_key":"${{ github.event.inputs.request_id }}", "terraform_action": "testing", "output": map_values(.value)}'> terraform_output.json
           cat terraform_output.json
       working-directory: ./aws/s3
 
