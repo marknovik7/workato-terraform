@@ -36,3 +36,8 @@ variable "jira_ticket_id" {
     default = null
 }
 
+variable "end_date" {
+    type = string
+    default = null
+}
+

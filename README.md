@@ -94,6 +94,44 @@ Example:
 | `security_group_id` | Security Group ID                     | string  | `sg-0daaafb9fd50a631b`  | Default Value Provided                   |
 | `jira_ticket_id` | Jira Ticket ID                           | string  | null                    | User Input Field                         |
 
+### SQS Queue Inputs
+
+Example:
+```json
+{
+    "region": "us-east-1",
+    "owner": "dixiy",
+    "type": "testing",
+    "aws_account_id": "353360065216",
+    "workato_iam_external_id": "1321312",
+    "pgp_key": "svc_tfo",
+    "sqs_queues_name": [
+        {
+            "name": "standard-queue",
+            "fifo": "false"
+        },
+        {
+            "name": "fifo-queue",
+            "fifo": "true"
+        }
+    ],
+    "jira_ticket_id": "JIRAID123_SQS"
+    }
+```
+
+#### Fields:
+
+| Field                | Description                               | Type    | Default Value      | User Input Field / Default Value Provided |
+|----------------------|-------------------------------------------|---------|--------------------|------------------------------------------|
+| `region`             | AWS region                                | string  | `us-east-1`        | Default Value Provided                   |
+| `owner`              | Owner of the resource                     | string  | `CS-OPS`           | User Input Field                         |
+| `type`               | Type of the resource                      | string  | `PoC`              | Default Value Provided                   |
+| `aws_account_id`     | Workato ID                                | string  | `353360065216`     | Default Value Provided                   |
+| `workato_iam_external_id` | Workato IAM External ID             | string  | `<External-ID>`    | User Input Field                         |
+| `pgp_key`            | PGP key                                   | string  | `svc_tfo`          | Default Value Provided                   |
+| `sqs_queues_name`    | List of SQS queues with name and type     | list    | []                 | User Input Field                         |
+| `jira_ticket_id`     | Jira Ticket ID                            | string  | null               | User Input Field                         |
+
 ## Usage
 
 To use these Terraform scripts, ensure you provide the required inputs as specified in the schema above.

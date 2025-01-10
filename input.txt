@@ -11,7 +11,7 @@ SQS Inputs: {
   "type": "testing",
   "aws_account_id": "353360065216",
   "workato_iam_external_id": "1321312",
-  "pgp_key": "my-keybase-key",
+  "pgp_key": "svc_tfo",
   "sqs_queues_name": [
     {
       "name": "standard-queue",
@@ -22,5 +22,6 @@ SQS Inputs: {
       "fifo": "true"
     }
   ],
-  "jira_ticket_id": "JIRAID123_SQS"
+  "jira_ticket_id": "JIRAID123_SQS",
+  "end_date": "22-01-2025"
 }

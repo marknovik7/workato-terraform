@@ -11,7 +11,7 @@ provider "aws" {
     tags = {
       Name = local.name
       OWNER = var.owner
-      Due = local.due
+      DeleteBy = var.end_date
       Type = var.type
       Provisioning = "Terraform"
       JiraTicketID = var.jira_ticket_id
