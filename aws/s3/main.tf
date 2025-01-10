@@ -50,7 +50,7 @@ resource "aws_iam_policy" "bucket_policy" {
         "Effect" : "Allow",
         "Action" : [
            "s3:GetBucketLocation",
-            "s3:ListAllMyBuckets"
+           "s3:ListAllMyBuckets"
         ],
         "Resource": "arn:aws:s3:::*"
       },
@@ -101,15 +101,9 @@ resource "aws_iam_role_policy_attachment" "cloud_watch_policy" {
 }
 
 resource "aws_iam_user" "user" {
-  name          = "${var.jira_ticket_id}-${random_string.random.result}"
+  name          = var.jira_ticket_id
   path          = "/s3/"
   force_destroy = true
-}
-
-resource "aws_iam_user_login_profile" "user" {
-  user                   = aws_iam_user.user.name
-  password               = random_password.user_password.result
-  password_reset_required = false
 }
 
 resource "aws_iam_user_policy_attachment" "user_policy_attachment" {
@@ -119,4 +113,9 @@ resource "aws_iam_user_policy_attachment" "user_policy_attachment" {
 
 data "aws_kms_alias" "shared_kms_key" {
   name = "alias/shared-kms-key"
+}
+
+output "generated_password" {
+  value       = random_password.user_password.result
+  sensitive   = true
 }
