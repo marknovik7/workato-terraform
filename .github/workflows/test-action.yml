@@ -56,7 +56,7 @@ jobs:
     - name: Build Error Message
       if: ${{ always() && (contains(needs.*.result, 'failure') || cancelled() )}}
       run: |
-        jq '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "testing", "output": {"message": "Process Failed or Cancelled. Please check process ${{ github.event.workflow.id }}"}}'> terraform_output.json
+        jq -cn '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "testing", "output": {"message": "Process Failed or Cancelled. Please check process ${{ github.event.id }}"}}'> terraform_output.json
         echo $(cat terraform_output.json)
       working-directory: ./aws/s3
 
