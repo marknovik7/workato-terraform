@@ -1,4 +1,4 @@
-name: 'Azure User Creation'
+name: 'Azure Resource Creation'
 
 on:
   repository_dispatch:
@@ -32,6 +32,10 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+    - name: Create variables file
+      id: variables-create
+      run: echo '${{ github.event.client_payload.variables }}' > ./${{ github.event.client_payload.working_directory }}/variables.tfvars.json
+
     - name: Initialize Terraform
       run: |
         terraform init \
@@ -47,13 +51,12 @@ jobs:
         if [ "${{ github.event.client_payload.action }}" == "destroy" ]; then
           terraform destroy -auto-approve
         else
-          terraform apply -auto-approve
+          terraform apply -auto-approve -var-file=variables.tfvars.json
         fi
       env:
         TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
         TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-        TF_VAR_new_user: ${{ github.event.client_payload.username }}
 
     - name: Remove state file from Azure Backend (Only on Destroy)
       if: github.event.client_payload.action == 'destroy'
