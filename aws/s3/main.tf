@@ -4,26 +4,17 @@ resource "random_string" "random" {
   }
   length  = 6
   special = false
-  upper   = false
+  upper = false
   numeric = false
 }
 
-resource "random_password" "user_password" {
-  length           = 16
-  special          = true
-  upper            = true
-  lower            = true
-  numeric          = true
-  override_special = "!@#$%^&*()-_=+[]{}<>?"
-}
-
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "${var.bucket_name}-${random_string.random.result}"
+  bucket = "${var.bucket_name}-${random_string.random.result}"
   force_destroy = true
 
   tags = {
-    Name  = "${var.bucket_name}-${random_string.random.result}"
-    Owner = var.owner
+    Name        = "${var.bucket_name}-${random_string.random.result}"
+    Owner       = var.owner
   }
 }
 
@@ -41,7 +32,7 @@ resource "time_static" "date" {
 resource "aws_iam_policy" "bucket_policy" {
   name        = "${var.bucket_name}-${random_string.random.result}_policy"
   path        = "/"
-  description = "Allow"
+  description = "Allow "
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -53,7 +44,7 @@ resource "aws_iam_policy" "bucket_policy" {
             "s3:ListAllMyBuckets"
         ],
         "Resource": "arn:aws:s3:::*"
-      },
+      },      
       {
         "Effect" : "Allow",
         "Action" : [
@@ -69,7 +60,7 @@ resource "aws_iam_policy" "bucket_policy" {
 }
 
 resource "aws_iam_role" "bucket_role" {
-  name = "${var.bucket_name}-${random_string.random.result}_role"
+  name = "${var.bucket_name}-${random_string.random.result}_role" //format("%s-%s", var.bucket_name, "role")
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -101,14 +92,14 @@ resource "aws_iam_role_policy_attachment" "cloud_watch_policy" {
 }
 
 resource "aws_iam_user" "user" {
-  name          = "${var.jira_ticket_id}-${random_string.random.result}"
+  name          = "${var.jira_ticket_id}"
   path          = "/s3/"
   force_destroy = true
 }
 
 resource "aws_iam_user_login_profile" "user" {
-  user                   = aws_iam_user.user.name
-  password               = random_password.user_password.result
+  user    = "${aws_iam_user.user.name}"
+  pgp_key = "keybase:${var.pgp_key}"
   password_reset_required = false
 }
 
