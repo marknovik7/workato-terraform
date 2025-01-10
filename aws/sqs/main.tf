@@ -1,6 +1,8 @@
 resource "random_string" "suffix" {
   length  = 6
   special = false
+  upper = false
+  numeric = false
 }
 
 resource "aws_sqs_queue" "sqs_dlq" {

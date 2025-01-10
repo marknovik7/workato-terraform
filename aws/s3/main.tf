@@ -2,7 +2,7 @@ resource "random_string" "random" {
   keepers = {
     bucket_name = var.bucket_name
   }
-  length  = 5
+  length  = 6
   special = false
   upper = false
   numeric = false
