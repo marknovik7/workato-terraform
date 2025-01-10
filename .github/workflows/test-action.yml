@@ -46,6 +46,9 @@ jobs:
           -backend-config="key=s3/${{ github.event.inputs.request_id }}/tf-state"
       working-directory: ./aws/s3
 
+    - name: Force Error
+      run: exit 1
+      
     - name: Terraform Output
       id: terraform_output
       run: |
