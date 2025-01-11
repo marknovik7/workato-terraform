@@ -65,9 +65,17 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+    - name: Print working directory
+      run: pwd
+    
+    - name: List directory contents
+      run: ls -la
+
     - name: Create variables file
       id: create_vars
-      run: echo '${{ github.event.inputs.variables }}' > .azure/${{ github.event.inputs.resource_type }}/variables.tfvars.json
+      run: |
+        echo .
+        echo '${{ github.event.inputs.variables }}' > azure/${{ github.event.inputs.resource_type }}/variables.tfvars.json
 
     - name: Initialize Terraform
       run: |
