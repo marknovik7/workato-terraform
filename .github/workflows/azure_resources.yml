@@ -65,12 +65,6 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Print working directory
-      run: pwd
-    
-    - name: List directory contents
-      run: ls -la
-
     - name: Create variables file
       id: create_vars
       run: |
