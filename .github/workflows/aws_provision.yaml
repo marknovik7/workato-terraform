@@ -1,0 +1,108 @@
+name: AWS Provisioning
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource_type:
+        description: 'AWS resource type (e.g., s3, ec2)'
+        required: true
+        type: choice
+        options:
+          - s3
+          - ec2-linux
+          - ec2-windows
+          - kms
+          - rds
+          - sqs
+      terraform_action:
+        description: 'terraform command to execute'
+        required: true
+        type: choice
+        default: apply
+        options:
+          - apply
+          - destroy
+      request_id:
+        description: 'Jira Ticket Id'
+        required: true
+        type: string
+      variables:
+        description: 'Variables for the resource in JSON format'
+        required: true
+        type: string
+
+env:
+  TF_BACKEND_BUCKET: "terraform-automation-state-store"
+  TF_BACKEND_REGION: "us-east-1"
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+  security-events: write
+
+jobs:
+  provision:
+    name: AWS Provisioning - ${{ github.event.inputs.resource_type }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+
+    # General Role for Workflow
+    - name: Configure AWS credentials - General Role
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_GITHUB_ACTION_ROLE }}
+        aws-region: ${{ env.TF_BACKEND_REGION }}
+
+    - name: Create variables file
+      id: create_vars
+      run: echo '${{ github.event.inputs.variables }}' > ./aws/${{ github.event.inputs.resource_type }}/variables.tfvars.json
+
+    - name: Verify variables file
+      run: ls -l ./aws/${{ github.event.inputs.resource_type }}/variables.tfvars.json
+
+    - name: Show contents of variables file
+      run: cat ./aws/${{ github.event.inputs.resource_type }}/variables.tfvars.json
+
+    - name: Initialize Terraform
+      run: |
+        terraform init \
+        -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
+        -backend-config="region=${{ env.TF_BACKEND_REGION }}" \
+        -backend-config="key=${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/tf-state"
+      working-directory: ./aws/${{ github.event.inputs.resource_type }}
+
+    - name: Apply Terraform
+      if: ${{ github.event.inputs.terraform_action == 'apply' }}
+      run: terraform apply -auto-approve -var-file=variables.tfvars.json
+      working-directory: ./aws/${{ github.event.inputs.resource_type }}
+
+    - name: Destroy Terraform
+      if: ${{ github.event.inputs.terraform_action == 'destroy' }}
+      run: terraform destroy -auto-approve -var-file=variables.tfvars.json
+      working-directory: ./aws/${{ github.event.inputs.resource_type }}
+
+    - name: Save Terraform Output Params
+      run: | 
+        echo "$(terraform output -json)" | jq '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "${{ github.event.inputs.terraform_action }}", "status": "success", "output": map_values(.value)}'> terraform_output.json
+      working-directory: ./aws/${{ github.event.inputs.resource_type }}
+
+    - name: Build Error Message
+      if: ${{ failure() || cancelled() }}
+      run: |
+        jq -cn '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "testing", "status": "failed", "output": {"message": "Process Failed or Cancelled. Please check process ${{ github.run_id }}"}}'> terraform_output.json
+        echo $(cat terraform_output.json)
+      working-directory: ./aws/s3
+    - name: Curl call
+      if: always()
+      run: |
+        curl -X POST -H 'Content-Type: application/json' -d @terraform_output.json "https://webhooks.workato.com/webhooks/rest/855bb7a0-ec04-4752-8022-044be408d270/get-callback"
+      working-directory: ./aws/${{ github.event.inputs.resource_type }}
