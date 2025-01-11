@@ -52,7 +52,7 @@ jobs:
       with:
         terraform_version: 1.10.3
 
-    - name: Configure AWS credentials for backend
+    - name: Configure AWS credentials for Backend
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ secrets.AWS_GITHUB_ACTION_ROLE }}
