@@ -41,7 +41,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: .azure/${{ github.event.inputs.resource_type }}
+        working-directory: ./azure/${{ github.event.inputs.resource_type }}
     
     steps:
     - name: Checkout repository
@@ -69,7 +69,7 @@ jobs:
       id: create_vars
       run: |
         echo .
-        echo '${{ github.event.inputs.variables }}' > azure/${{ github.event.inputs.resource_type }}/variables.tfvars.json
+        echo '${{ github.event.inputs.variables }}' > ./azure/${{ github.event.inputs.resource_type }}/variables.tfvars.json
 
     - name: Initialize Terraform
       run: |
