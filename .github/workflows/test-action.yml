@@ -46,17 +46,20 @@ jobs:
           -backend-config="key=s3/${{ github.event.inputs.request_id }}/tf-state"
       working-directory: ./aws/s3
 
+    - name: Force Error
+      run: exit 1
+
     - name: Terraform Output
       id: terraform_output
       run: |
-          echo "$(terraform output -json)" | jq '{"jira_key":"${{ github.event.inputs.request_id }}", "terraform_action": "testing", "output": map_values(.value)}'> terraform_output.json
+          echo "$(terraform output -json)" | jq '{"jira_key":"${{ github.event.inputs.request_id }}", "terraform_action": "testing", "status": ${{ failure }}"output": map_values(.value)}'> terraform_output.json
           cat terraform_output.json
       working-directory: ./aws/s3
 
     - name: Build Error Message
-      if: ${{ always() && (contains(needs.*.result, 'failure') || cancelled() )}}
+      if: ${{ failure() || cancelled() }}
       run: |
-        jq '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "testing", "output": {"message": "Process Failed or Cancelled. Please check process ${{ github.event.workflow.id }}"}}'> terraform_output.json
+        jq -cn '{"jira_key": "${{ github.event.inputs.request_id }}", "terraform_action": "testing", "output": {"message": "Process Failed or Cancelled. Please check process ${{ github.run_id }}"}}'> terraform_output.json
         echo $(cat terraform_output.json)
       working-directory: ./aws/s3
 
