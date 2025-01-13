@@ -67,7 +67,9 @@ jobs:
 
     - name: Create variables file
       id: create_vars
-      run: echo '${{ github.event.inputs.variables }}' > ./azure/${{ github.event.inputs.resource_type }}/variables.tfvars.json
+      run: |
+        cd azure/${{ github.event.inputs.resource_type }}
+        echo '${{ github.event.inputs.variables }}' > variables.tfvars.json
 
     - name: Initialize Terraform
       run: |
