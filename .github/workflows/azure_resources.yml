@@ -73,7 +73,7 @@ jobs:
       run: |
         mkdir -p azure/${{ github.event.inputs.resource_type }}
         cd azure/${{ github.event.inputs.resource_type }}
-        echo '${{ github.event.inputs.variables }}' > variables.tfvars.json
+        echo '${{ github.event.inputs.variables }}' > variables.tfvars.json 
 
     - name: Initialize Terraform
       run: |
