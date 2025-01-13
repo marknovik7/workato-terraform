@@ -99,7 +99,6 @@ resource "aws_iam_user" "user" {
 
 resource "aws_iam_user_login_profile" "user" {
   user    = "${aws_iam_user.user.name}"
-  pgp_key = "keybase:${var.pgp_key}"
   password_reset_required = false
 }
 
