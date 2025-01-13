@@ -50,8 +50,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-        ref: main
-        # ref: ${{ github.event.inputs.terraform_action == 'destroy' && steps.retrieve_commit_sha.outputs.commit_sha || 'main' }}
+        # ref: main
+        ref: ${{ github.event.inputs.terraform_action == 'destroy' && steps.retrieve_commit_sha.outputs.commit_sha || 'main' }}
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v2
@@ -93,19 +93,19 @@ jobs:
       run: terraform destroy -auto-approve -var-file=variables.tfvars.json
       working-directory: ./aws/${{ github.event.inputs.resource_type }}
 
-    # - name: Save commit SHA to S3 (only for apply)
-    #   if: ${{ github.event.inputs.terraform_action == 'apply' }}
-    #   run: |
-    #     echo $GITHUB_SHA > commit_sha.txt
-    #     aws s3 cp commit_sha.txt s3://${{ env.TF_BACKEND_BUCKET }}/${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/commit_sha.txt
+    - name: Save commit SHA to S3 (only for apply)
+      if: ${{ github.event.inputs.terraform_action == 'apply' }}
+      run: |
+        echo $GITHUB_SHA > commit_sha.txt
+        aws s3 cp commit_sha.txt s3://${{ env.TF_BACKEND_BUCKET }}/${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/commit_sha.txt
 
-    # - name: Retrieve commit SHA from S3 (only for destroy)
-    #   if: ${{ github.event.inputs.terraform_action == 'destroy' }}
-    #   id: retrieve_commit_sha
-    #   run: |
-    #     aws s3 cp s3://${{ env.TF_BACKEND_BUCKET }}/${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/commit_sha.txt commit_sha.txt
-    #     COMMIT_SHA=$(cat commit_sha.txt)
-    #     echo "::set-output name=commit_sha::$COMMIT_SHA"
+    - name: Retrieve commit SHA from S3 (only for destroy)
+      if: ${{ github.event.inputs.terraform_action == 'destroy' }}
+      id: retrieve_commit_sha
+      run: |
+        aws s3 cp s3://${{ env.TF_BACKEND_BUCKET }}/${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/commit_sha.txt commit_sha.txt
+        COMMIT_SHA=$(cat commit_sha.txt)
+        echo "::set-output name=commit_sha::$COMMIT_SHA"
 
     - name: Save Terraform Output Params
       run: | 
