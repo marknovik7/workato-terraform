@@ -8,56 +8,56 @@ resource "random_string" "random" {
   numeric = false
 }
 
-# resource "aws_s3_bucket" "bucket" {
-#   bucket = "${var.bucket_name}-${random_string.random.result}"
-#   force_destroy = true
+resource "aws_s3_bucket" "bucket" {
+  bucket = "${var.bucket_name}-${random_string.random.result}"
+  force_destroy = true
 
-#   tags = {
-#     Name        = "${var.bucket_name}-${random_string.random.result}"
-#     Owner       = var.owner
-#   }
-# }
+  tags = {
+    Name        = "${var.bucket_name}-${random_string.random.result}"
+    Owner       = var.owner
+  }
+}
 
-# resource "aws_s3_bucket_public_access_block" "bucket_access" {
-#   bucket = aws_s3_bucket.bucket.id
+resource "aws_s3_bucket_public_access_block" "bucket_access" {
+  bucket = aws_s3_bucket.bucket.id
 
-#   block_public_acls   = true
-#   block_public_policy = true
-#   ignore_public_acls  = true
-# }
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
+}
 
-# resource "time_static" "date" {
-# }
+resource "time_static" "date" {
+}
 
-# resource "aws_iam_policy" "bucket_policy" {
-#   name        = "${var.bucket_name}-${random_string.random.result}_policy"
-#   path        = "/"
-#   description = "Allow "
+resource "aws_iam_policy" "bucket_policy" {
+  name        = "${var.bucket_name}-${random_string.random.result}_policy"
+  path        = "/"
+  description = "Allow "
 
-#   policy = jsonencode({
-#     "Version" : "2012-10-17",
-#     "Statement" : [
-#       {
-#         "Effect" : "Allow",
-#         "Action" : [
-#            "s3:GetBucketLocation",
-#             "s3:ListAllMyBuckets"
-#         ],
-#         "Resource": "arn:aws:s3:::*"
-#       },      
-#       {
-#         "Effect" : "Allow",
-#         "Action" : [
-#           "s3:*"
-#         ],
-#         "Resource" : [
-#           "arn:aws:s3:::${var.bucket_name}-${random_string.random.result}",
-#           "arn:aws:s3:::${var.bucket_name}-${random_string.random.result}/*",
-#         ]
-#       }
-#    ]
-#   })
-# }
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+           "s3:GetBucketLocation",
+            "s3:ListAllMyBuckets"
+        ],
+        "Resource": "arn:aws:s3:::*"
+      },      
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:*"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${var.bucket_name}-${random_string.random.result}",
+          "arn:aws:s3:::${var.bucket_name}-${random_string.random.result}/*",
+        ]
+      }
+   ]
+  })
+}
 
 resource "aws_iam_role" "bucket_role" {
   name = "${var.bucket_name}-${random_string.random.result}_role" //format("%s-%s", var.bucket_name, "role")
@@ -97,11 +97,11 @@ resource "aws_iam_user" "user" {
   force_destroy = true
 }
 
-resource "aws_iam_user_login_profile" "user" {
-  user    = "${aws_iam_user.user.name}"
-  pgp_key = "keybase:${var.pgp_key}"
-  password_reset_required = false
-}
+# resource "aws_iam_user_login_profile" "user" {
+#   user    = "${aws_iam_user.user.name}"
+#   pgp_key = "keybase:${var.pgp_key}"
+#   password_reset_required = false
+# }
 
 resource "aws_iam_user_policy_attachment" "user_policy_attachment" {
   user       = aws_iam_user.user.name
