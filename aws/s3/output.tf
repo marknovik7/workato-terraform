@@ -15,10 +15,10 @@ output username {
     value = aws_iam_user.user.name
 }
 
-output "password" {
-  value = "${aws_iam_user_login_profile.user.encrypted_password}"
-  sensitive = true
-}
+# output "password" {
+#   value = "${aws_iam_user_login_profile.user.encrypted_password}"
+#   sensitive = true
+# }
 
 output "kms_key" {
   value = "${data.aws_kms_alias.shared_kms_key.arn}"
