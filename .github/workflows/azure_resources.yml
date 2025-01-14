@@ -94,7 +94,8 @@ jobs:
     - name: Remove state file from S3 Backend (Only on Destroy)
       if: github.event.inputs.action == 'destroy'
       run: |
-        aws s3 rm s3:/${{ secrets.S3_BUCKET_NAME }}/${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/tf-state
+        terraform workspace delete default
+        terraform workspace delete ${{ github.event.inputs.request_id }}
       
     - name: Remove state directory from S3 Backend (Only on Destroy)
       if: github.event.inputs.action == 'destroy'
