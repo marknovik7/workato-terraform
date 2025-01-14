@@ -69,7 +69,7 @@ jobs:
       id: create_vars
       run: echo '${{ github.event.inputs.variables }}' > variables.tfvars.json
 
-    - name: List directory contents after creating variables file
+    - name: List directory contents
       run: ls -la
 
     - name: Initialize Terraform
