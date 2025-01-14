@@ -91,10 +91,15 @@ jobs:
         TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
         TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
 
-    - name: Remove state file from Azure Backend (Only on Destroy)
+    - name: Remove state file from S3 Backend (Only on Destroy)
       if: github.event.inputs.action == 'destroy'
       run: |
-        aws s3 rm s3://${{ secrets.S3_BUCKET_NAME }}/terraform.tfstate
+        aws s3 rm s3://${{ secrets.S3_BUCKET_NAME }}/${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/tf-state
+      
+    - name: Remove state directory from S3 Backend (Only on Destroy)
+      if: github.event.inputs.action == 'destroy'
+      run: |
+        aws s3 rm s3://${{ secrets.S3_BUCKET_NAME }}/${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }} --recursive
 
     # - name: Send output to webhook
     #   if: always()
