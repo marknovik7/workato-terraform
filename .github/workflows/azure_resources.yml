@@ -69,15 +69,17 @@ jobs:
       id: create_vars
       run: echo '${{ github.event.inputs.variables }}' > terraform.tfvars.json
 
-    - name: List directory contents
-      run: ls -la
-
     - name: Initialize Terraform
       run: |
         terraform init \
         -backend-config="bucket=${{ env.TF_BACKEND_BUCKET }}" \
         -backend-config="region=${{ env.TF_BACKEND_REGION }}" \
         -backend-config="key=${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }}/tf-state"
+
+    - name: Select or Create Workspace
+      run: |
+        WORKSPACE_NAME="${{ github.event.inputs.resource_type }}-${{ github.event.inputs.request_id }}"
+        terraform workspace select $WORKSPACE_NAME || terraform workspace new $WORKSPACE_NAME
   
     - name: Apply or Destroy Terraform
       run: |
@@ -91,16 +93,12 @@ jobs:
         TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
         TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
 
-    - name: Remove state file from S3 Backend (Only on Destroy) 
+    - name: Remove state file from S3 Backend (Only on Destroy)
       if: github.event.inputs.action == 'destroy'
       run: |
-        terraform workspace delete default
-        terraform workspace delete ${{ github.event.inputs.request_id }}
-      
-    - name: Remove state directory from S3 Backend (Only on Destroy)
-      if: github.event.inputs.action == 'destroy'
-      run: |
-        aws s3 rm s3:/${{ secrets.S3_BUCKET_NAME }}/${{ github.event.inputs.resource_type }}/${{ github.event.inputs.request_id }} --recursive
+        WORKSPACE_NAME="${{ github.event.inputs.resource_type }}-${{ github.event.inputs.request_id }}"
+        terraform workspace select default
+        terraform workspace delete -force $WORKSPACE_NAME
 
     # - name: Send output to webhook
     #   if: always()
